@@ -1,0 +1,57 @@
+﻿@using PagedList
+@using PagedList.Mvc
+@using Portfolio_Blog.Models
+@model IPagedList<Blog>
+
+
+<div class="preloader">
+    <div class="rounder"></div>
+</div>
+<!-- Preloader End -->
+
+@foreach (var item in Model)
+{
+    <!-- Blog Post Start -->
+<div class="row">
+    <div class="col-md-12 blog-post">
+        <div class="post-title">
+            @item.Title
+        </div>
+        <div class="post-info">
+            <span>@item.Created.ToString("MMM dd, yyyy") by <a href="https://atsatsa-portfolio.azurewebsites.net" target="_blank">Allison Tsatsa</a></span>
+        </div>
+        <p>@Html.Raw(item.Abstract)</p>
+
+        @Html.ActionLink("Read More", "Details", "Blogs", new { slug = item.Slug }, new { @class = "button button-style button-anim fa fa-long-arrow-right" })
+    </div>
+</div>
+    <!-- Blog Post End -->
+
+}
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchStr = ViewBag.Search }))
+
+
+@*<div class="col-md-12 text-center">
+        <a href="javascript:void(0)" id="load-more-post" class="load-more-button">Load</a>
+        <div id="post-end-message"></div>
+    </div>*@
+
+
+
+@*< !--Subscribe Form Start-- >*@
+
+@*< div class="col-md-8 col-md-offset-2">
+    <form id="mc-form" method="post" action="Your Mailchimp URL">
+
+        <div class="subscribe-form margin-top-20">
+            <input id="mc-email" type="email" placeholder="Email Address" class="text-input">
+            <button class="submit-btn" type="submit">Submit</button>
+        </div>
+        <p>Subscribe to my weekly newsletter</p>
+        <label for="mc-email" class="mc-label"></label>
+    </form>*@
+
+
+<!-- Subscribe Form End -->
+<!-- Blog Post (Right Sidebar) End -->

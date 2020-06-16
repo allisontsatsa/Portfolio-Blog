@@ -1,0 +1,103 @@
+﻿@model Portfolio_Blog.ViewModels.LandingPageViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+ Preloader Start 
+<div class="preloader">
+    <div class="rounder"></div>
+</div>
+
+<div class="col">
+    <div class="col-md-12 page-body">
+        <div class="row">
+            <div class="sub-title">
+                <a href="@Url.Action("Index", "Home")"><h1>Back Home</h1></a>
+            </div>
+            <div class="col-md-12 content-page">
+                <div class="col-md-12 blog-post">
+
+
+                    <!-- Post Headline Start -->
+                    <div class="post-title">
+                        <h2>@Model.Blog.Title</h2>
+                    </div>
+                    <!-- Post Headline End -->
+                    <!-- Post Detail Start -->
+                    <div class="post-info">
+                        <span>@Model.Blog.Created.ToString("MMM dd, yyyy") by <a href="https://atsatsa-portfolio.azurewebsites.net" target="_blank">Allison Tsatsa</a></span>
+                    </div>
+                    <!-- Post Detail End -->
+
+
+                    <p>@Html.Raw(Model.Blog.Body)</p>
+                    <hr />
+                    @if (@Model.Blog.MediaUrl != null)
+                    {
+                        <img class="img-responsive" src="@Model.Blog.MediaUrl" alt="">
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Post Comment Start -->
+            <div class="col-md-12 content-page">
+                <div class="col-md-12 blog-post">
+                    <h3>Comments</h3>
+                    <h5>Log-in to Leave a Comment</h5>
+                    <h3 class="h6">Comments<span class="no-of-comments"> (@Model.Blog.Comments.Count())</span></h3>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        using (Html.BeginForm("Create", "Comments", FormMethod.Post, null))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("BlogId", Model.Blog.Id)
+                            @Html.HiddenFor(model => model.Blog.Slug)
+                            @*@Html.HiddenFor(model => model.Slug)
+                                @Html.HiddenFor(model => model.Slug)*@
+
+
+                            @Html.TextArea("CommentBody", new { rows = 10, cols = 50 })
+                            <br />
+                            <button type="submit">Submit</button>
+                        }
+                    }
+
+                    @foreach (var comment in Model.Blog.Comments.OrderByDescending(c => c.Created).ToList())
+                    {
+                        <p><h5>@comment.Author.DisplayName</h5></p>
+                        <p>@Html.Raw(comment.Body)</p>
+                        <p>@comment.Created.ToString()</p>
+                        <hr />
+                    }
+                </div>
+                <!-- Post Comment End -->
+
+                @*You May Also Like Start*@
+
+                <div class="you-may-also-like margin-top-50 margin-bottom-50">
+                    <h3>You may also like:</h3>
+                    <div class="row">
+
+                        @foreach (var post in Model.OtherBlogs.Take(3))
+                        {
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <a href="@Url.Action("Details", new { slug = post.Slug})"><p>@post.Title</p></a>
+                            </div>
+                        }
+                        @*<div class="col-md-4 col-sm-6 col-xs-12">
+                                <a href="details.html"><p></p></a>
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <a href="details.html"><p></p></a>
+                            </div>*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
